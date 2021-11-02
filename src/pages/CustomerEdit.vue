@@ -5,6 +5,7 @@
       <q-form
         @submit="onSubmit"
         class="q-gutter-md"
+        :hidden="loading"
       >
         <q-input
           filled
@@ -54,8 +55,8 @@
 </template>
 
 <script>
-import { defineComponent } from 'vue';
-import { useQuasar } from 'quasar';
+import { defineComponent, ref } from 'vue';
+import { useQuasar, Loading } from 'quasar';
 import { api } from '../boot/axios';
 
 const $q = useQuasar();
@@ -66,6 +67,11 @@ export default defineComponent({
     id: {
       type: String,
     },
+  },
+  setup() {
+    return {
+      loading: ref(false),
+    };
   },
   data() {
     return {
@@ -85,6 +91,8 @@ export default defineComponent({
   },
   methods: {
     getCustomers() {
+      this.loading = true;
+      Loading.show();
       api.get('/customers')
         .then((response) => {
           this.rows = response.data;
@@ -101,6 +109,10 @@ export default defineComponent({
             message: 'Loading failed',
             icon: 'report_problem',
           });
+        })
+        .finally(() => {
+          this.loading = false;
+          Loading.hide();
         });
     },
     // Simular filtragem pela API
@@ -116,11 +128,23 @@ export default defineComponent({
       this.$router.push('/');
     },
     onSubmit() {
+      this.loading = true;
       api.put(`/customers/${this.customer.id}`)
         .then((response) => {
           // eslint-disable-next-line no-console
           console.log(response.data);
           this.$router.push({ path: '/', params: this.customer.name });
+        })
+        .catch(() => {
+          $q.notify({
+            color: 'negative',
+            position: 'top',
+            message: 'Loading failed',
+            icon: 'report_problem',
+          });
+        })
+        .finally(() => {
+          this.loading = false;
         });
     },
   },
