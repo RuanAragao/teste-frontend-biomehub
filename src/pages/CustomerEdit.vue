@@ -1,38 +1,40 @@
-<template>
-  <q-page class="flex flex-center">
-    <div class="q-pa-md" style="max-width: 400px">
+<template class="column">
+  <q-page class="row flex flex-center">
+    <div class="q-pa-md col-xs-12 col-sm-6 col-md-4" style="max-width: 400px">
       <div>Edit: {{ customer.name }}</div>
       <q-form
         @submit="onSubmit"
+        @formchange="validate"
         class="q-gutter-md"
         :hidden="loading"
+        ref="formEdit"
       >
         <q-input
           filled
           v-model="customer.name"
-          label="Customer name *"
+          label="Nome *"
           lazy-rules
-          :rules="[ val => val && val.length > 0 || 'Please type something']"
+          :rules="[ val => val && val.length > 0 || 'Por favor, insira o nome.']"
         />
 
         <q-input
           filled
           type="number"
           v-model="customer.age"
-          label="Customer age *"
+          label="Idade *"
           lazy-rules
           :rules="[
-            val => val !== null && val !== '' || 'Please type your age',
-            val => val > 0 && val < 100 || 'Please type a real age'
+            val => val !== null && val !== '' || 'Por favor, digite a idade.',
+            val => val.length > 0 && val.length <= 3 || 'Por favor, informe uma idade válida.'
           ]"
         />
 
         <q-input
           filled
           v-model="customer.city"
-          label="Customer city *"
+          label="Cidade *"
           lazy-rules
-          :rules="[ val => val && val.length > 0 || 'Please type something']"
+          :rules="[ val => val && val.length > 0 || 'Por favor, insira a cidade.']"
         />
 
         <div>
@@ -40,6 +42,7 @@
             label="Salvar"
             type="submit"
             color="primary"
+            :disable="btnDisabled"
           />
           <q-btn
             label="Cancelar"
@@ -69,8 +72,16 @@ export default defineComponent({
     },
   },
   setup() {
+    // to reset validations:
+    // eslint-disable-next-line no-unused-vars
+    // function reset() {
+    //   formEdit.value.resetValidation();
+    // }
+
     return {
       loading: ref(false),
+      formEdit: ref(null),
+      btnDisabled: null,
     };
   },
   data() {
@@ -120,6 +131,17 @@ export default defineComponent({
       const finded = costumers.find((costumer) => costumer.id === parseInt(id, 10));
       if (!finded) return false;
       return finded;
+    },
+    validate() {
+      // eslint-disable-next-line
+      console.log("validate");
+      this.formEdit.value.validate().then((success) => {
+        if (success) {
+          this.btnDisabled = false;
+        } else {
+          this.btnDisabled = true;
+        }
+      });
     },
     goBack() {
       if (window.history.length > 1) {
