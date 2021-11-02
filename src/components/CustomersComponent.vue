@@ -21,7 +21,7 @@
         <template v-slot:body-cell-action="props">
           <q-td :props="props">
             <q-btn
-            color="blue"
+            color="primary"
             icon-right="edit"
             no-caps
             flat
