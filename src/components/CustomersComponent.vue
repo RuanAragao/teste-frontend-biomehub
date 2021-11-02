@@ -1,14 +1,23 @@
 <template>
   <div id="q-app">
     <div class="q-pa-md">
-      <q-toggle v-model="loading" label="Loading state" class="q-mb-md" />
+      <q-toggle v-model="loading" label="Simular carregamento" class="q-mb-md" />
       <q-table
-        title="Customers List"
+        title="Lista de Clientes"
         :rows="rows"
         :columns="columns"
-        row-key="name"
         :loading="loading"
+        :filter="filter"
+        :rows-per-page-options="[10]"
+        row-key="name"
       >
+        <template v-slot:top-right>
+          <q-input borderless dense debounce="300" v-model="filter" placeholder="Search">
+            <template v-slot:append>
+              <q-icon name="search" />
+            </template>
+          </q-input>
+        </template>
         <template v-slot:body-cell-action="props">
           <q-td :props="props">
             <q-btn
@@ -53,42 +62,37 @@ const columns = [
 
 export default {
   name: 'CustomersComponent',
-  props: {
-    title: {
+  params: {
+    name: {
       type: String,
     },
   },
   setup() {
     return {
+      filter: ref(''),
       loading: ref(false),
-      pagination: {
-        rowsPerPage: 10,
-      },
-      paginationControl: {
-        rowsPerPage: 10,
-      },
-      initialPagination: {
-        rowsPerPage: 10,
-      },
     };
   },
   data() {
     return {
       submitted: false,
+      customer: {
+        name: String,
+      },
       columns,
       rows: [],
     };
   },
   mounted() {
     this.getCustomers();
+    // eslint-disable-next-line no-console
+    console.log(this.$route.params);
   },
   methods: {
     getCustomers() {
       api.get('/customers')
         .then((response) => {
           this.rows = response.data;
-          // eslint-disable-next-line
-          // console.table(response.data);
         })
         .catch(() => {
           $q.notify({
@@ -100,11 +104,6 @@ export default {
         });
     },
     editVal(index) {
-      // eslint-disable-next-line no-console
-      console.log(this.rows[index].id);
-      // this.rows.splice(index, 1);
-      // eslint-disable-next-line no-console
-      console.log(this.rows);
       this.$router.push({ path: `/edit/${this.rows[index].id}` });
     },
   },
