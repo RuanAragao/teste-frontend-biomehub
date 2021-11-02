@@ -8,7 +8,7 @@
         </q-avatar>
 
         <q-toolbar-title>
-          BIOMEHUB
+          <strong>BIOME</strong>HUB
         </q-toolbar-title>
 
       </q-toolbar>

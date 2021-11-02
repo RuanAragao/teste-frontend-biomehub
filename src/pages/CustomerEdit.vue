@@ -120,6 +120,7 @@ export default defineComponent({
         .then((response) => {
           // eslint-disable-next-line no-console
           console.log(response.data);
+          this.$router.push({ path: '/', params: this.customer.name });
         });
     },
   },

@@ -2,13 +2,15 @@ const routes = [
   {
     path: '/',
     component: () => import('layouts/MainLayout.vue'),
+    name: 'list',
     children: [
-      { path: '', component: () => import('pages/Index.vue') },
+      { path: '', component: () => import('pages/Index.vue'), props: true },
     ],
   },
   {
     path: '/edit/:id',
     component: () => import('layouts/MainLayout.vue'),
+    name: 'edit',
     children: [
       { path: '', component: () => import('pages/CustomerEdit.vue'), props: true },
     ],

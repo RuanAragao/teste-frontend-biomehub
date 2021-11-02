@@ -9,17 +9,18 @@
         :loading="loading"
         :filter="filter"
         :rows-per-page-options="[10]"
+        :grid="$q.screen.lt.md"
         row-key="name"
       >
         <template v-slot:top-right>
-          <q-input borderless dense debounce="300" v-model="filter" placeholder="Search">
+          <q-input dense debounce="300" v-model="filter" placeholder="Search">
             <template v-slot:append>
               <q-icon name="search" />
             </template>
           </q-input>
         </template>
         <template v-slot:body-cell-action="props">
-          <q-td :props="props">
+          <q-td auto-width :props="props">
             <q-btn
             color="primary"
             icon-right="edit"
@@ -38,10 +39,21 @@
 <script>
 import { ref } from 'vue';
 import { api } from 'boot/axios';
-import { useQuasar } from 'quasar';
+import { useQuasar, Screen } from 'quasar';
 
 const $q = useQuasar();
 
+// Setup media queries
+Screen.setSizes(
+  {
+    sm: 300,
+    md: 768, // RF02
+    lg: 1000,
+    xl: 2000,
+  },
+);
+
+// Define columns table
 const columns = [
   {
     name: 'id', align: 'left', label: 'Id', field: (row) => row.id, sortable: true, required: true,
