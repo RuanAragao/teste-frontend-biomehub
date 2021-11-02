@@ -9,6 +9,7 @@
         :filter="filter"
         :rows-per-page-options="[10]"
         :grid="$q.screen.lt.md"
+        grid-header
         row-key="name"
       >
         <template v-slot:top-right>
