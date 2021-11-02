@@ -1,7 +1,6 @@
 <template>
   <q-page class="flex flex-center">
-    <customers-component title="Uôrdi">
-    </customers-component>
+    <customers-component />
   </q-page>
 </template>
 

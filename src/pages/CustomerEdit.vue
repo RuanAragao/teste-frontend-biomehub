@@ -4,7 +4,6 @@
       <div>Edit: {{ customer.name }}</div>
       <q-form
         @submit="onSubmit"
-        @cancel="goBack"
         class="q-gutter-md"
       >
         <q-input
@@ -36,12 +35,17 @@
         />
 
         <div>
-          <q-btn label="Save" type="submit" color="primary"/>
           <q-btn
-            label="Cancel"
-            type="calcel"
+            label="Salvar"
+            type="submit"
+            color="primary"
+          />
+          <q-btn
+            label="Cancelar"
+            type="cancel"
             color="primary"
             flat class="q-ml-sm"
+            @click="goBack"
           />
         </div>
       </q-form>
@@ -110,6 +114,13 @@ export default defineComponent({
         this.$router.go(-1);
       }
       this.$router.push('/');
+    },
+    onSubmit() {
+      api.put(`/customers/${this.customer.id}`)
+        .then((response) => {
+          // eslint-disable-next-line no-console
+          console.log(response.data);
+        });
     },
   },
 });
