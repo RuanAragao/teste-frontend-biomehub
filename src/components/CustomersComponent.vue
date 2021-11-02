@@ -1,7 +1,6 @@
 <template>
   <div id="q-app">
     <div class="q-pa-md">
-      <q-toggle v-model="loading" label="Simular carregamento" class="q-mb-md" />
       <q-table
         title="Lista de Clientes"
         :rows="rows"
@@ -102,6 +101,7 @@ export default {
   },
   methods: {
     getCustomers() {
+      this.loading = true;
       api.get('/customers')
         .then((response) => {
           this.rows = response.data;
@@ -113,6 +113,9 @@ export default {
             message: 'Loading failed',
             icon: 'report_problem',
           });
+        })
+        .finally(() => {
+          this.loading = false;
         });
     },
     editVal(index) {
