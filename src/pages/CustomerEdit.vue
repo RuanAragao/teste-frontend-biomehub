@@ -57,6 +57,8 @@
     </div>
   </q-page>
 
+  <loading-component />
+
 <div class="overlay" v-show="loading">
   <div class="overlay__inner">
     <div class="overlay__content">
@@ -93,6 +95,7 @@
 </template>
 
 <script>
+import LoadingComponent from 'src/components/LoadingComponent.vue';
 import { defineComponent, ref } from 'vue';
 import { useQuasar } from 'quasar';
 import { api } from '../boot/axios';
@@ -100,6 +103,7 @@ import { api } from '../boot/axios';
 const $q = useQuasar();
 
 export default defineComponent({
+  components: { LoadingComponent },
   name: 'PageCustomerEdit',
   props: {
     id: {
