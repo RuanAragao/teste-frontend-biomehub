@@ -1,5 +1,5 @@
 <template>
-  <div class="overlay" v-show="visible">
+  <div class="overlay">
     <div class="overlay__inner">
       <div class="overlay__content">
         <svg xmlns="http://www.w3.org/2000/svg" width="128" height="190.78" viewBox="0 0 287 426" fill="none">
@@ -39,11 +39,6 @@ import { defineComponent } from 'vue';
 
 export default defineComponent({
   name: 'LoadingComponent',
-  data() {
-    return {
-      visible: false,
-    };
-  },
 });
 </script>
 
