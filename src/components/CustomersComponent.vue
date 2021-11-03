@@ -39,7 +39,7 @@
                 <div class="row items-center no-wrap">
                   <div class="col">
                     <div class="text-h6">{{ props.row.name }}</div>
-                    <div class="text-subtitle2">{{ props.row.city }}</div>
+                    <div class="text-subtitle1">{{ props.row.city }}</div>
                   </div>
 
                   <div class="col-auto">
@@ -57,8 +57,10 @@
 
               <q-separator />
 
-              <q-card-section>
-                <div class="text-subtitle2">#{{ props.row.id }} ・ Idade: {{ props.row.id }}</div>
+              <q-card-section class="row">
+                <div class="text-subtitle2">Idade: {{ props.row.id }}</div>
+                <q-space />
+                <div class="text-subtitle2">#{{ props.row.id }}</div>
               </q-card-section>
 
             </q-card>
@@ -68,6 +70,27 @@
       </q-table>
     </div>
   </div>
+
+  <!-- Alert -->
+  <q-dialog
+    v-model="dialog"
+    position="top"
+  >
+    <q-card
+      style="max-width: 600px"
+      class="bg-positive text-white"
+    >
+      <q-card-section class="row items-center no-wrap">
+        <div>
+          <div class="text-h6 text-weight-light">
+            Cliente <strong>{{customerEdited}}</strong> atualizado com sucesso!
+          </div>
+        </div>
+        <q-space />
+        <q-btn flat round icon="close" v-close-popup />
+      </q-card-section>
+    </q-card>
+  </q-dialog>
 </template>
 
 <script>
@@ -76,16 +99,6 @@ import { api } from 'boot/axios';
 import { useQuasar, Screen } from 'quasar';
 
 const $q = useQuasar();
-
-// Setup media queries
-Screen.setSizes(
-  {
-    sm: 300,
-    md: 768, // RF02
-    lg: 1000,
-    xl: 2000,
-  },
-);
 
 // Define columns table
 const columns = [
@@ -106,33 +119,41 @@ const columns = [
   },
 ];
 
+const dialog = ref(false);
+
 export default {
   name: 'CustomersComponent',
-  params: {
-    name: {
-      type: String,
-    },
-  },
   setup() {
+    // Setup media queries
+    Screen.setSizes(
+      {
+        sm: 300,
+        md: 768, // RF02
+        lg: 1000,
+        xl: 2000,
+      },
+    );
+
     return {
       filter: ref(''),
       loading: ref(false),
+      dialog,
+      customerEdited: null,
     };
   },
   data() {
     return {
       submitted: false,
-      customer: {
-        name: String,
-      },
       columns,
       rows: [],
     };
   },
   mounted() {
     this.getCustomers();
-    // eslint-disable-next-line no-console
-    console.log(this.$route.params);
+    if (localStorage.getItem('customerUpdated')) {
+      this.customerEdited = localStorage.getItem('customerUpdated');
+      this.dialogShow();
+    }
   },
   methods: {
     getCustomers() {
@@ -155,6 +176,13 @@ export default {
     },
     editVal(index) {
       this.$router.push({ path: `/edit/${this.rows[index].id}` });
+    },
+    onCloseAlert() {
+      localStorage.removeItem('customerUpdated');
+    },
+    dialogShow() {
+      dialog.value = true;
+      this.onCloseAlert();
     },
   },
 };

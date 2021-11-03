@@ -6,6 +6,9 @@ const routes = [
     children: [
       { path: '', component: () => import('pages/Index.vue'), props: true },
     ],
+    props: {
+      name: null,
+    },
   },
   {
     path: '/edit/:id',

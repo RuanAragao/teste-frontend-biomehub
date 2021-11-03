@@ -1,12 +1,13 @@
 <template class="column">
   <q-page class="row flex flex-center">
     <div class="q-pa-md col-xs-12 col-sm-6 col-md-4" style="max-width: 400px">
-      <div>Edit: {{ customer.name }}</div>
+      <h1 class="text-h4 q-pb-md">
+        Editar cliente
+      </h1>
       <q-form
         @submit="onSubmit"
         @formchange="validate"
         class="q-gutter-md"
-        :hidden="loading"
         ref="formEdit"
       >
         <q-input
@@ -59,6 +60,7 @@
 
 <script>
 import { defineComponent, ref } from 'vue';
+// import { useStore, mapMutations } from 'vuex';
 import { useQuasar, Loading } from 'quasar';
 import { api } from '../boot/axios';
 
@@ -71,47 +73,30 @@ export default defineComponent({
       type: String,
     },
   },
-  setup() {
-    // to reset validations:
-    // eslint-disable-next-line no-unused-vars
-    // function reset() {
-    //   formEdit.value.resetValidation();
-    // }
-
-    return {
-      loading: ref(false),
-      formEdit: ref(null),
-      btnDisabled: null,
-    };
-  },
   data() {
     return {
+      loading: ref(false),
+      btnDisabled: null,
+      formEdit: ref(),
       rows: [],
       customer: {
-        id: Number,
-        name: String,
-        age: Number,
-        city: String,
+        id: null,
+        name: null,
+        age: null,
+        city: null,
       },
     };
   },
   mounted() {
     this.getCustomers();
-    // eslint-disable-next-line no-console
-    // console.table(this.findById(this.rows));
   },
   methods: {
     getCustomers() {
-      this.loading = true;
       Loading.show();
       api.get('/customers')
         .then((response) => {
           this.rows = response.data;
-          // eslint-disable-next-line
-          // console.table(response.data);
           this.customer = this.findById(this.rows, this.id);
-          // eslint-disable-next-line no-console
-          // console.table(this.customer);
         })
         .catch(() => {
           $q.notify({
@@ -122,7 +107,6 @@ export default defineComponent({
           });
         })
         .finally(() => {
-          this.loading = false;
           Loading.hide();
         });
     },
@@ -133,8 +117,6 @@ export default defineComponent({
       return finded;
     },
     validate() {
-      // eslint-disable-next-line
-      console.log("validate");
       this.formEdit.value.validate().then((success) => {
         if (success) {
           this.btnDisabled = false;
@@ -155,7 +137,9 @@ export default defineComponent({
         .then((response) => {
           // eslint-disable-next-line no-console
           console.log(response.data);
-          this.$router.push({ path: '/', params: this.customer.name });
+          localStorage.setItem('customerUpdated', this.customer.name);
+          this.$router.push({ path: '/' });
+          // set: this.$store.state.customer.name;
         })
         .catch(() => {
           $q.notify({
