@@ -126,7 +126,9 @@ export default {
           timeout: 5000,
           textColor: 'white',
           actions: [{ icon: 'close', color: 'white' }],
-          message: `Cliente <strong>${this.customerEdited}</strong> atualizado com sucesso!`,
+          message: `<span class="text-h6 text-weight-light text-center">
+                    Cliente <strong>${this.customerEdited}</strong>
+                    atualizado com sucesso!</span>`,
           html: true,
           onDismiss: this.onCloseAlert(),
         });
