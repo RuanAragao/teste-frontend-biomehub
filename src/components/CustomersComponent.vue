@@ -13,12 +13,23 @@
         row-key="name"
       >
         <template v-slot:top-right>
-          <q-input dense debounce="300" v-model="filter" placeholder="Pesquisar">
-            <template v-slot:append>
-              <q-icon name="search" />
-            </template>
-          </q-input>
+          <div class="row q-gutter-sm q-mb-md">
+            <q-input dense debounce="300" v-model="filter" placeholder="Pesquisar">
+              <template v-slot:append>
+                <q-icon name="search" />
+              </template>
+            </q-input>
+
+            <q-btn
+              color="primary"
+              icon-right="archive"
+              label="Exportar para csv"
+              no-caps
+              @click="exportTable"
+            />
+          </div>
         </template>
+
         <template v-slot:body-cell-action="props">
           <q-td auto-width :props="props">
             <q-btn
@@ -55,6 +66,7 @@
                 </div>
               </q-card-section>
 
+              <!-- Mobile cards add -->
               <q-separator />
 
               <q-card-section class="row">
@@ -75,9 +87,32 @@
 <script>
 import { ref } from 'vue';
 import { api } from 'boot/axios';
-import { useQuasar, Screen, Notify } from 'quasar';
+import {
+  useQuasar, Screen, Notify, exportFile,
+} from 'quasar';
 
 const $q = useQuasar();
+
+// Format CSV
+function wrapCsvValue(val, formatFn) {
+  let formatted = formatFn !== void 0
+    ? formatFn(val)
+    : val;
+
+  formatted = formatted === void 0 || formatted === null
+    ? ''
+    : String(formatted);
+
+  formatted = formatted.split('"').join('""');
+  /**
+   * Excel accepts \n and \r in strings, but some other CSV parsers do not
+   * Uncomment the next two lines to escape new lines
+   */
+  // .split('\n').join('\\n')
+  // .split('\r').join('\\r')
+
+  return `"${formatted}"`;
+}
 
 // Define columns table
 const columns = [
@@ -98,8 +133,6 @@ const columns = [
   },
 ];
 
-const dialog = ref(false);
-
 export default {
   name: 'CustomersComponent',
   setup() {
@@ -116,7 +149,6 @@ export default {
     return {
       filter: ref(''),
       loading: ref(false),
-      dialog,
       customerEdited: null,
       triggerUpdateNotify() {
         Notify.create({
@@ -173,6 +205,31 @@ export default {
     },
     onCloseAlert() {
       localStorage.removeItem('customerUpdated');
+    },
+    exportTable() {
+      // naive encoding to csv format
+      const content = [columns.map((col) => wrapCsvValue(col.label))].concat(
+        this.rows.map((row) => columns.map((col) => wrapCsvValue(
+          typeof col.field === 'function'
+            ? col.field(row)
+            : row[col.field === void 0 ? col.name : col.field],
+          col.format,
+        )).join(',')),
+      ).join('\r\n');
+
+      const status = exportFile(
+        'table-export.csv',
+        content,
+        'text/csv',
+      );
+
+      if (status !== true) {
+        $q.notify({
+          message: 'Browser denied file download...',
+          color: 'negative',
+          icon: 'warning',
+        });
+      }
     },
   },
 };
