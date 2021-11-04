@@ -209,8 +209,6 @@ export default {
     },
     exportTable() {
       // naive encoding to csv format
-      // eslint-disable-next-line no-console
-      console.table(columns);
       const content = [columns.map((col) => wrapCsvValue(col.label !== 'Editar' ? col.label : null))].concat(
         this.rows.map((row) => columns.map((col) => wrapCsvValue(
           typeof col.field === 'function'
