@@ -146,7 +146,7 @@ module.exports = configure((ctx) => ({
       display: 'standalone',
       orientation: 'portrait',
       background_color: '#ffffff',
-      theme_color: '#027be3',
+      theme_color: '#2e6796',
       icons: [
         {
           src: 'icons/icon-128x128.png',
