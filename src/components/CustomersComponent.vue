@@ -20,10 +20,11 @@
               </template>
             </q-input>
 
+            <!-- Button Export to SCV -->
             <q-btn
               color="primary"
               icon-right="archive"
-              label="Exportar para csv"
+              label="Exportar CSV"
               no-caps
               @click="exportTable"
             />
@@ -129,7 +130,7 @@ const columns = [
     name: 'city', align: 'left', label: 'Cidade', field: 'city', sortable: true,
   },
   {
-    name: 'action', label: 'Ação', field: 'action',
+    name: 'action', label: 'Editar', field: 'action',
   },
 ];
 
@@ -208,7 +209,9 @@ export default {
     },
     exportTable() {
       // naive encoding to csv format
-      const content = [columns.map((col) => wrapCsvValue(col.label))].concat(
+      // eslint-disable-next-line no-console
+      console.table(columns);
+      const content = [columns.map((col) => wrapCsvValue(col.label !== 'Editar' ? col.label : null))].concat(
         this.rows.map((row) => columns.map((col) => wrapCsvValue(
           typeof col.field === 'function'
             ? col.field(row)
@@ -218,14 +221,14 @@ export default {
       ).join('\r\n');
 
       const status = exportFile(
-        'table-export.csv',
+        'lista-de-clientes.csv',
         content,
         'text/csv',
       );
 
       if (status !== true) {
         $q.notify({
-          message: 'Browser denied file download...',
+          message: 'Ocorreu um erro ao exportar o CSV',
           color: 'negative',
           icon: 'warning',
         });
