@@ -70,33 +70,12 @@
       </q-table>
     </div>
   </div>
-
-  <!-- Alert -->
-  <q-dialog
-    v-model="dialog"
-    position="top"
-  >
-    <q-card
-      style="max-width: 600px"
-      class="bg-positive text-white"
-    >
-      <q-card-section class="row items-center no-wrap">
-        <div>
-          <div class="text-h6 text-weight-light">
-            Cliente <strong>{{customerEdited}}</strong> atualizado com sucesso!
-          </div>
-        </div>
-        <q-space />
-        <q-btn flat round icon="close" v-close-popup />
-      </q-card-section>
-    </q-card>
-  </q-dialog>
 </template>
 
 <script>
 import { ref } from 'vue';
 import { api } from 'boot/axios';
-import { useQuasar, Screen } from 'quasar';
+import { useQuasar, Screen, Notify } from 'quasar';
 
 const $q = useQuasar();
 
@@ -139,6 +118,18 @@ export default {
       loading: ref(false),
       dialog,
       customerEdited: null,
+      triggerUpdateNotify() {
+        Notify.create({
+          type: 'positive',
+          position: 'top',
+          progress: true,
+          timeout: 5000,
+          textColor: 'white',
+          actions: [{ icon: 'close', color: 'white' }],
+          message: `Cliente <strong>${this.customerEdited}</strong> atualizado com sucesso!`,
+          html: true,
+        });
+      },
     };
   },
   data() {
@@ -152,7 +143,7 @@ export default {
     this.getCustomers();
     if (localStorage.getItem('customerUpdated')) {
       this.customerEdited = localStorage.getItem('customerUpdated');
-      this.dialogShow();
+      this.triggerUpdateNotify();
     }
   },
   methods: {
@@ -179,10 +170,6 @@ export default {
     },
     onCloseAlert() {
       localStorage.removeItem('customerUpdated');
-    },
-    dialogShow() {
-      dialog.value = true;
-      this.onCloseAlert();
     },
   },
 };

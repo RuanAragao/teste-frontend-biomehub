@@ -83,7 +83,9 @@ module.exports = configure((ctx) => ({
 
   // https://quasar.dev/quasar-cli/quasar-conf-js#Property%3A-framework
   framework: {
-    config: {},
+    config: {
+      notify: {},
+    },
 
     // iconSet: 'material-icons', // Quasar icon set
     // lang: 'en-US', // Quasar language pack
@@ -96,7 +98,9 @@ module.exports = configure((ctx) => ({
     // directives: [],
 
     // Quasar plugins
-    plugins: [],
+    plugins: [
+      'Notify',
+    ],
   },
 
   // animations: 'all', // --- includes all animations
@@ -146,7 +150,7 @@ module.exports = configure((ctx) => ({
       display: 'standalone',
       orientation: 'portrait',
       background_color: '#ffffff',
-      theme_color: '#027be3',
+      theme_color: '#2e6796',
       icons: [
         {
           src: 'icons/icon-128x128.png',
