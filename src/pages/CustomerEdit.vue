@@ -95,6 +95,7 @@ export default defineComponent({
     this.getCustomers();
   },
   methods: {
+    // Get API data
     getCustomers() {
       this.loading = true;
       api.get('/customers')
@@ -120,6 +121,7 @@ export default defineComponent({
       if (!finded) return false;
       return finded;
     },
+    // Enable and disable buttom submit (bug)
     validate() {
       this.formEdit.value.validate().then((success) => {
         if (success) {
@@ -129,12 +131,14 @@ export default defineComponent({
         }
       });
     },
+    // Navigate back history or go to home
     goBack() {
       if (window.history.length > 1) {
         this.$router.go(-1);
       }
       this.$router.push('/');
     },
+    // Submit
     onSubmit() {
       this.loading = true;
       api.put(`/customers/${this.customer.id}`)
@@ -143,7 +147,6 @@ export default defineComponent({
           console.log(response.data);
           localStorage.setItem('customerUpdated', this.customer.name);
           this.$router.push({ path: '/' });
-          // set: this.$store.state.customer.name;
         })
         .catch(() => {
           $q.notify({
