@@ -128,6 +128,7 @@ export default {
           actions: [{ icon: 'close', color: 'white' }],
           message: `Cliente <strong>${this.customerEdited}</strong> atualizado com sucesso!`,
           html: true,
+          onDismiss: this.onCloseAlert(),
         });
       },
     };
